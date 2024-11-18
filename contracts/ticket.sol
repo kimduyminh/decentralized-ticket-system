@@ -21,7 +21,7 @@ contract Ticket is ERC721 {
     }
 
     //create Tickets
-    function _createTickets(string memory _eventName,address _address,uint32 _seatPosition, uint32 _price,string _positionType) public{
+    function _createTickets(string memory _eventName,address _address,uint32 _seatPosition, uint32 _price,string memory _positionType) public{
         ticketId=keccak256(abi.encodePacked(block.timestamp,_address,_seatPosition,_eventName));
         idToTicketInfo[ticketId] = ticketInfo({
             ticketName: _eventName,
@@ -32,7 +32,7 @@ contract Ticket is ERC721 {
         _safeMint(_address,uint256(ticketId));
         addressToTicketId[_address].push(uint256(ticketId));
     }
-    function _createMultipleTickets(string memory _eventName,address _address, uint32 _numberOfTickets,uint32 _price,string _positionType) public{
+    function _createMultipleTickets(string memory _eventName,address _address, uint32 _numberOfTickets,uint32 _price,string memory _positionType) public{
         for(uint32 i=0;i<_numberOfTickets;i++){
             _createTickets(_eventName, _address, i, _price,_positionType);
         }

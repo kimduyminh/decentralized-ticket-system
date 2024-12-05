@@ -6,11 +6,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Ticket is ERC721 {
     bytes32 private ticketId;
+    array address public eventOrganizer[];
 
     struct ticketInfo{
         string ticketName;
-        uint32 seatPosition;
-        uint32 price;
+        uint256 seatPosition;
+        uint256 price;
         string positionType;
     }
     mapping(bytes32 => ticketInfo) idToTicketInfo;
@@ -20,8 +21,8 @@ contract Ticket is ERC721 {
     constructor() ERC721("Ticket", "TCK") {
     }
 
-    //create Tickets
-    function _createTickets(string memory _eventName,address _address,uint32 _seatPosition, uint32 _price,string memory _positionType) public{
+    //minting Tickets
+    function _createTickets(string memory _eventName,address _address,uint256 _seatPosition, uint256 _price,string memory _positionType) public onlyOrganizer(_address){
         ticketId=keccak256(abi.encodePacked(block.timestamp,_address,_seatPosition,_eventName));
         idToTicketInfo[ticketId] = ticketInfo({
             ticketName: _eventName,
@@ -32,15 +33,18 @@ contract Ticket is ERC721 {
         _safeMint(_address,uint256(ticketId));
         addressToTicketId[_address].push(uint256(ticketId));
     }
-    function _createMultipleTickets(string memory _eventName,address _address, uint32 _numberOfTickets,uint32 _price,string memory _positionType) public{
-        for(uint32 i=0;i<_numberOfTickets;i++){
+    function _createMultipleTickets(string memory _eventName,address _address,uint256 _numberOfTickets,uint256 _price,string memory _positionType) public onlyOrganizer(_address){
+        for(uint256 i=0;i<_numberOfTickets;i++){
             _createTickets(_eventName, _address, i, _price,_positionType);
         }
     }
 
     //change Tickets price
-    function _changeTicketPrice(bytes32 _ticketId, uint32 _newPrice) public onlyTicketOwner(_ticketId) payable{
+    function _changeTicketPrice(bytes32 _ticketId, uint256 _newPrice) public onlyTicketOwner(_ticketId) payable{
+        require(idToTicketInfo.contains(_ticketId));
         require(msg.value >= 0.002 ether);
+        require(_newPrice > 0);
+        require(_newPrice != idToTicketInfo[_ticketId].price);
         idToTicketInfo[_ticketId].price = _newPrice;
     }
 
@@ -67,5 +71,18 @@ contract Ticket is ERC721 {
         require(msg.value >= idToTicketInfo[_ticketId].price * 1 ether);
         _transferTicket(msg.sender,_address,_ticketId);
     }
+
+    //event organizer 
+    modifier onlyOrganizer(address _address){
+        require(eventOrganizer.contains(_address));
+        _;
+    }
+    fun _addEventOrganizer(address _address) public onlyOwner{
+        eventOrganizer.push(_address);
+    }
+    fun _removeEventOrganizer(address _address) public onlyOwner{
+        eventOrganizer.remove(_address);
+    }
+
 
 }

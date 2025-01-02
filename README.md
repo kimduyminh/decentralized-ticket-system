@@ -95,6 +95,7 @@ The contract requires:
 1. **Event Metadata**: Enhance tickets with IPFS or on-chain metadata.
 2. **Secondary Market**: Introduce features for reselling tickets.
 3. **Dynamic Pricing**: Enable adjustable pricing based on demand.
+4. **Dapp Development**: Deploy fully functional web3 application.
 
 ---
 

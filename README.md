@@ -1,4 +1,4 @@
-# Ticket Smart Contract
+# Decentralized Ticket Contract
 
 ## Introduction
 

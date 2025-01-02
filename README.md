@@ -90,7 +90,7 @@ The contract requires:
 
 ---
 
-## Future Improvements
+## Upcoming Features
 
 1. **Event Metadata**: Enhance tickets with IPFS or on-chain metadata.
 2. **Secondary Market**: Introduce features for reselling tickets.
